@@ -1,7 +1,7 @@
 import json
 import os
-import discord
-from discord.gateway import DiscordWebSocket, Status
+import selfcord
+from selfcord.gateway import DiscordWebSocket, Status
 
 
 VALID_STATUSES = ["online", "dnd", "idle", "invisible", "mobile", "streaming"]
@@ -28,22 +28,22 @@ class StatusManager:
     def _parse_status(self, status_str):
         status_str = (status_str or "online").lower()
         mapping = {
-            "online": discord.Status.online,
-            "dnd": discord.Status.dnd,
-            "idle": discord.Status.idle,
-            "invisible": discord.Status.invisible,
-            "mobile": discord.Status.online,
+            "online": selfcord.Status.online,
+            "dnd": selfcord.Status.dnd,
+            "idle": selfcord.Status.idle,
+            "invisible": selfcord.Status.invisible,
+            "mobile": selfcord.Status.online,
         }
-        status = mapping.get(status_str, discord.Status.online)
+        status = mapping.get(status_str, selfcord.Status.online)
 
         if status_str == "streaming":
-            return status, discord.Activity(
-                type=discord.ActivityType.streaming,
+            return status, selfcord.Activity(
+                type=selfcord.ActivityType.streaming,
                 name="Streaming",
                 url="https://twitch.tv/voby7",
             )
 
-        return status, discord.CustomActivity(name=self.status_msg)
+        return status, selfcord.CustomActivity(name=self.status_msg)
 
     def _patch_mobile_identify(self):
         if self._mobile_patched:

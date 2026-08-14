@@ -1,7 +1,7 @@
 import asyncio
 import json
 import os
-import discord
+import selfcord
 from .status import StatusManager
 
 
@@ -32,9 +32,7 @@ class ZNESelfBot:
     def __init__(self, token, status_manager):
         self.token = token
         self.status_manager = status_manager
-        intents = discord.Intents.default()
-        intents.message_content = False
-        self.client = discord.Client(self_bot=True, intents=intents)
+        self.client = selfcord.Client(self_bot=True)
 
         @self.client.event
         async def on_ready():
@@ -48,7 +46,7 @@ class ZNESelfBot:
     async def start(self):
         try:
             await self.client.start(self.token)
-        except discord.errors.LoginFailure:
+        except selfcord.errors.LoginFailure:
             print(f"Login failed for token ending in ...{self.token[-6:]}. Token may be invalid or expired.")
         except Exception as e:
             print(f"Error starting bot: {e}")
