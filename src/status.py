@@ -15,6 +15,8 @@ class StatusManager:
         self.status_msg = self.config.get("status_msg", "Running ZNE Always online 1.0!")
         self._original_identify = None
         self._mobile_patched = False
+        if self.status_icon == "mobile":
+            self._patch_mobile_identify()
 
     def _load_config(self):
         try:
@@ -83,8 +85,4 @@ class StatusManager:
     async def apply_status(self, client):
         status = self._parse_status(self.status_icon)
         activity = discord.CustomActivity(name=self.status_msg)
-
-        if self.status_icon == "mobile":
-            self._patch_mobile_identify()
-
         await client.change_presence(status=status, activity=activity)
