@@ -4,7 +4,7 @@ import discord
 from discord.gateway import DiscordWebSocket, Status
 
 
-VALID_STATUSES = ["online", "dnd", "idle", "invisible", "mobile"]
+VALID_STATUSES = ["online", "dnd", "idle", "invisible", "mobile", "streaming"]
 
 
 class StatusManager:
@@ -34,7 +34,16 @@ class StatusManager:
             "invisible": discord.Status.invisible,
             "mobile": discord.Status.online,
         }
-        return mapping.get(status_str, discord.Status.online)
+        status = mapping.get(status_str, discord.Status.online)
+
+        if status_str == "streaming":
+            return status, discord.Activity(
+                type=discord.ActivityType.streaming,
+                name="Streaming",
+                url="https://twitch.tv/voby7",
+            )
+
+        return status, discord.CustomActivity(name=self.status_msg)
 
     def _patch_mobile_identify(self):
         if self._mobile_patched:
@@ -83,6 +92,7 @@ class StatusManager:
         self._mobile_patched = True
 
     async def apply_status(self, client):
-        status = self._parse_status(self.status_icon)
-        activity = discord.CustomActivity(name=self.status_msg)
+        result = self._parse_status(self.status_icon)
+        status = result[0]
+        activity = result[1]
         await client.change_presence(status=status, activity=activity)

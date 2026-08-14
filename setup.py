@@ -3,7 +3,7 @@ import os
 
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
-VALID_STATUSES = ["online", "dnd", "idle", "invisible", "mobile"]
+VALID_STATUSES = ["online", "dnd", "idle", "invisible", "mobile", "streaming"]
 
 
 def load_config():
@@ -45,7 +45,7 @@ def setup():
             if other_token:
                 tokens.append(other_token)
 
-    print("\nAvailable status icons: online, dnd, idle, invisible, mobile")
+    print("\nAvailable status icons: online, dnd, idle, invisible, mobile, streaming")
     status_icon = input("Enter your desired status icon (press Enter for default 'online'): ").strip()
     if not status_icon:
         status_icon = "online"
