@@ -21,10 +21,10 @@ def get_tokens():
     config = load_config()
     tokens = config.get("tokens")
     if isinstance(tokens, list):
-        return [t for t in tokens if isinstance(t, str) and t.strip()]
+        return [t.strip().strip('"') for t in tokens if isinstance(t, str) and t.strip()]
     token = config.get("token")
     if isinstance(token, str) and token.strip():
-        return [token.strip()]
+        return [token.strip().strip('"')]
     return []
 
 

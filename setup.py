@@ -20,12 +20,16 @@ def save_config(config):
         f.write("\n")
 
 
+def _clean_token(raw):
+    return raw.strip().strip('"')
+
+
 def setup():
     print("=== ZNE Always Online Setup Wizard ===\n")
 
     config = load_config()
 
-    token = input("Enter your token here: ").strip()
+    token = _clean_token(input("Enter your token here: "))
     if not token:
         print("Token is required.")
         return
@@ -35,7 +39,7 @@ def setup():
     add_more = input("Do you have any other accounts you wanna keep online? Y/N: ").strip().lower()
     if add_more == "y":
         while True:
-            other_token = input("Enter your other token here (write Done if completed): ").strip()
+            other_token = _clean_token(input("Enter your other token here (write Done if completed): "))
             if other_token.lower() == "done":
                 break
             if other_token:
