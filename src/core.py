@@ -21,10 +21,10 @@ def get_tokens():
     config = load_config()
     tokens = config.get("tokens")
     if isinstance(tokens, list):
-        return [t.strip().strip('"') for t in tokens if isinstance(t, str) and t.strip()]
+        return [t.strip().strip('"').strip("'") for t in tokens if isinstance(t, str) and t.strip()]
     token = config.get("token")
     if isinstance(token, str) and token.strip():
-        return [token.strip().strip('"')]
+        return [token.strip().strip('"').strip("'")]
     return []
 
 
@@ -41,8 +41,17 @@ class ZNESelfBot:
             print(f"Logged in as {self.client.user}")
             await self.status_manager.apply_status(self.client)
 
+        @self.client.event
+        async def on_error(event, *args, **kwargs):
+            print(f"Error in {event}: {args} {kwargs}")
+
     async def start(self):
-        await self.client.start(self.token)
+        try:
+            await self.client.start(self.token)
+        except discord.errors.LoginFailure:
+            print(f"Login failed for token ending in ...{self.token[-6:]}. Token may be invalid or expired.")
+        except Exception as e:
+            print(f"Error starting bot: {e}")
 
 
 async def run_all():
@@ -50,6 +59,10 @@ async def run_all():
     if not tokens:
         print("No tokens found in config.json")
         return
+
+    print(f"Loaded {len(tokens)} token(s)")
+    for i, tok in enumerate(tokens, 1):
+        print(f"  Token {i}: {'*' * 12}...{tok[-6:]} (length: {len(tok)})")
 
     status_manager = StatusManager()
     bots = [ZNESelfBot(token, status_manager) for token in tokens]

@@ -21,7 +21,7 @@ def save_config(config):
 
 
 def _clean_token(raw):
-    return raw.strip().strip('"')
+    return raw.strip().strip('"').strip("'")
 
 
 def setup():
